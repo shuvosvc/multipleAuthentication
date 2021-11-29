@@ -2,24 +2,33 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 
-const productSchema = require("../schemas/productSchema");
-const Product = new mongoose.model("Product", productSchema);
+const productModel = require("../schemas/productModel");
+const Product = new mongoose.model("Product", productModel);
 
 const checkLogin = require("../middleware/checkLogin");
 //-------------------------------------------------------GET ALL THE ProductS
-router.get("/", async (req, res) => {
+router.get("/all", async (req, res) => {
   try {
-    const users = await Product.find({});
+    const products = await Product.find({});
 
     res.status(200).json({
-      data: users,
-      message: "Success!!",
+      data: products,
     });
   } catch (err) {
     console.log("There were a mongoose error");
   }
 });
-//-------------------------------------------------------GET ALL THE ProductS
+router.get("/:id", async (req, res) => {
+  try {
+    const products = await Product.find({ _id: req.params.id });
+
+    res.status(200).json({
+      data: products,
+    });
+  } catch (err) {
+    console.log("There were a mongoose error");
+  }
+});
 
 //----------------------------------------------------POST Product
 
@@ -64,12 +73,17 @@ router.post("/ALL", async (req, res) => {
 //---------------------------------------------------------------------PUT Product
 router.put("/:id", async (req, res) => {
   try {
-    const result = await Product.findByIdAndUpdate(
+    const rrr = await Product.findByIdAndUpdate(
       { _id: req.params.id },
       {
         $set: {
-          status: "inactive",
-          title: req.body.title,
+          name: req.body.name,
+          category: req.body.category,
+          brand: req.body.brand,
+          price: req.body.price,
+          image: req.body.image,
+          description: req.body.description,
+          publish: req.body.publish,
         },
       },
       { new: true, useFindAndModify: false },
@@ -82,7 +96,6 @@ router.put("/:id", async (req, res) => {
           res.status(200).json({
             message: "Product was updated successfully",
           });
-          console.log(req.body.title);
         }
       }
     );
