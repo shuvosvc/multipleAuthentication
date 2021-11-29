@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema({
   roll: {
     type: String,
     enum: ["customer", "admin"],
-    default: "active",
+    default: "customer",
   },
 });
 module.exports = userSchema;

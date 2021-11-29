@@ -3,92 +3,57 @@ const router = express.Router();
 const mongoose = require("mongoose");
 
 const productSchema = require("../schemas/productSchema");
-const Todo = new mongoose.model("Todo", productSchema);
-
-const userSchema = require("../schemas/userSchema");
-const User = new mongoose.model("User", userSchema);
+const Product = new mongoose.model("Product", productSchema);
 
 const checkLogin = require("../middleware/checkLogin");
-//-------------------------------------------------------GET ALL THE TODOS
-router.get("/", checkLogin, async (req, res) => {
-  console.log(req.userName);
-  console.log(req.userId);
+//-------------------------------------------------------GET ALL THE ProductS
+router.get("/", async (req, res) => {
   try {
-    await Todo.find({})
-      .populate("user", "userName -_id")
-      .exec((err, data) => {
-        if (err) {
-          res.status(500).json({
-            error: "There was a server side error!",
-          });
-        } else {
-          res.status(200).json({
-            result: data,
-            message: "Success",
-          });
-        }
-      });
-  } catch (err) {
-    console.log("There were a mongoose error");
-  }
-});
-//-------------------------------------------------------GET ALL THE TODOS
+    const users = await Product.find({});
 
-//----------------------------------------------------POST TODO
-// router.post("/", checkLogin, async (req, res) => {
-//   const newTodo = new Todo({ ...req.body, user: req.userId });
-
-//   try {
-//     await newTodo.save((err) => {
-//       if (err) {
-//         res.status(500).json({
-//           error: "There was a server side error",
-//         });
-//       } else {
-//         res.status(200).json({
-//           message: "Todo was inserted successfully",
-//         });
-//       }
-//     });
-//   } catch (err) {
-//     console.log("There were a mongoose error");
-//   }
-// });
-
-router.post("/", checkLogin, async (req, res) => {
-  const newTodo = new Todo({ ...req.body, user: req.userId });
-
-  try {
-    const todo = await newTodo.save();
-    await User.updateOne(
-      {
-        _id: req.userId,
-      },
-      {
-        $push: {
-          todos: todo._id,
-        },
-      }
-    );
     res.status(200).json({
-      message: "Todo was inserted successfully!",
+      data: users,
+      message: "Success!!",
     });
   } catch (err) {
     console.log("There were a mongoose error");
   }
 });
+//-------------------------------------------------------GET ALL THE ProductS
 
-//----------------------------------------------POST MULTIPLE TODO
+//----------------------------------------------------POST Product
+
+router.post("/", checkLogin, async (req, res) => {
+  try {
+    if (req.userRoll === "admin") {
+      const newProduct = new Product({ ...req.body });
+
+      await newProduct.save();
+      console.log(newProduct);
+      res.status(200).json({
+        message: "Product was inserted successfully!",
+      });
+    } else {
+      res.status(401).json({
+        error: "Only admin can post new products!!!",
+      });
+    }
+  } catch (err) {
+    console.log("There were a mongoose error");
+  }
+});
+
+//----------------------------------------------POST MULTIPLE Product
 router.post("/ALL", async (req, res) => {
   try {
-    await Todo.insertMany(req.body, (err) => {
+    await Product.insertMany(req.body, (err) => {
       if (err) {
         res.status(500).json({
           error: "There was a server side error",
         });
       } else {
         res.status(200).json({
-          message: "Todos ware inserted successfully",
+          message: "Products ware inserted successfully",
         });
       }
     });
@@ -96,10 +61,10 @@ router.post("/ALL", async (req, res) => {
     console.log("Their were a mongoose error");
   }
 });
-//---------------------------------------------------------------------PUT TODO
+//---------------------------------------------------------------------PUT Product
 router.put("/:id", async (req, res) => {
   try {
-    const result = await Todo.findByIdAndUpdate(
+    const result = await Product.findByIdAndUpdate(
       { _id: req.params.id },
       {
         $set: {
@@ -115,7 +80,7 @@ router.put("/:id", async (req, res) => {
           });
         } else {
           res.status(200).json({
-            message: "Todo was updated successfully",
+            message: "Product was updated successfully",
           });
           console.log(req.body.title);
         }
@@ -125,10 +90,10 @@ router.put("/:id", async (req, res) => {
     console.log("Their were a mongoose error");
   }
 });
-//-------------------------------------------------------------delet TODO
+//-------------------------------------------------------------delet Product
 router.delete("/:id", async (req, res) => {
   try {
-    await Todo.deleteOne(
+    await Product.deleteOne(
       { _id: req.params.id },
 
       (err) => {
@@ -138,7 +103,7 @@ router.delete("/:id", async (req, res) => {
           });
         } else {
           res.status(200).json({
-            message: "Todo was updated successfully",
+            message: "Product was updated successfully",
           });
         }
       }

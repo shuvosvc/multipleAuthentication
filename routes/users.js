@@ -9,6 +9,7 @@ const User = new mongoose.model("User", userSchema);
 router.post("/signup", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    console.log(req.body.roll, req.body.userName);
     const newUser = new User({
       name: req.body.name,
       userName: req.body.userName,
@@ -41,6 +42,7 @@ router.post("/login", async (req, res) => {
           {
             userName: tem_user[0].userName,
             userId: tem_user[0]._id,
+            userRoll: tem_user[0].roll,
           },
           process.env.JWT_SECRET,
           { expiresIn: "24h" }
@@ -66,9 +68,9 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/all", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const users = await User.find({}).populate("todos");
+    const users = await User.find();
 
     res.status(200).json({
       data: users,

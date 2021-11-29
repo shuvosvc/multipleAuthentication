@@ -1,12 +1,14 @@
 const mongoose = require("mongoose");
 const productSchema = mongoose.Schema({
   name: { type: String, required: true },
-  userName: { type: String, required: true },
-  password: { type: String, required: true },
-
-  status: {
-    type: String,
-    enum: ["active", "inactive"],
+  category: { type: String },
+  brand: { type: String },
+  price: { type: String },
+  image: { type: String },
+  description: { type: String },
+  publish: {
+    type: Boolean,
+    default: false,
   },
 });
 module.exports = productSchema;
