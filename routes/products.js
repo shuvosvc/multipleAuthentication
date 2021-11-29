@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 
-const todoSchema = require("../schemas/todoSchema");
-const Todo = new mongoose.model("Todo", todoSchema);
+const productSchema = require("../schemas/productSchema");
+const Todo = new mongoose.model("Todo", productSchema);
 
 const userSchema = require("../schemas/userSchema");
 const User = new mongoose.model("User", userSchema);
@@ -11,11 +11,11 @@ const User = new mongoose.model("User", userSchema);
 const checkLogin = require("../middleware/checkLogin");
 //-------------------------------------------------------GET ALL THE TODOS
 router.get("/", checkLogin, async (req, res) => {
-  console.log(req.username);
+  console.log(req.userName);
   console.log(req.userId);
   try {
     await Todo.find({})
-      .populate("user", "username -_id")
+      .populate("user", "userName -_id")
       .exec((err, data) => {
         if (err) {
           res.status(500).json({

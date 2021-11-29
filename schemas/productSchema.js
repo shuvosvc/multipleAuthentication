@@ -1,13 +1,12 @@
 const mongoose = require("mongoose");
-const userSchema = mongoose.Schema({
+const productSchema = mongoose.Schema({
   name: { type: String, required: true },
   userName: { type: String, required: true },
   password: { type: String, required: true },
 
-  roll: {
+  status: {
     type: String,
-    enum: ["customer", "admin"],
-    default: "active",
+    enum: ["active", "inactive"],
   },
 });
-module.exports = userSchema;
+module.exports = productSchema;

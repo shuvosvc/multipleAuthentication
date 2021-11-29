@@ -11,8 +11,9 @@ router.post("/signup", async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const newUser = new User({
       name: req.body.name,
-      username: req.body.username,
+      userName: req.body.userName,
       password: hashedPassword,
+      roll: req.body.roll,
     });
 
     await newUser.save();
@@ -28,7 +29,7 @@ router.post("/signup", async (req, res) => {
 //-------------------------------------------------------login
 router.post("/login", async (req, res) => {
   try {
-    const tem_user = await User.find({ username: req.body.username });
+    const tem_user = await User.find({ userName: req.body.userName });
     if (tem_user && tem_user.length > 0) {
       const isValidPassword = await bcrypt.compare(
         req.body.password,
@@ -38,7 +39,7 @@ router.post("/login", async (req, res) => {
         //..................generate token
         const token = jwt.sign(
           {
-            username: tem_user[0].username,
+            userName: tem_user[0].userName,
             userId: tem_user[0]._id,
           },
           process.env.JWT_SECRET,
