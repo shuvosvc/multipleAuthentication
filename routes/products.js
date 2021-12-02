@@ -38,7 +38,7 @@ router.post("/", checkLogin, async (req, res) => {
       const newProduct = new Product({ ...req.body });
 
       await newProduct.save();
-      console.log(newProduct);
+
       res.status(200).json({
         message: "Product was inserted successfully!",
       });
@@ -52,28 +52,10 @@ router.post("/", checkLogin, async (req, res) => {
   }
 });
 
-//----------------------------------------------POST MULTIPLE Product
-router.post("/ALL", async (req, res) => {
-  try {
-    await Product.insertMany(req.body, (err) => {
-      if (err) {
-        res.status(500).json({
-          error: "There was a server side error",
-        });
-      } else {
-        res.status(200).json({
-          message: "Products ware inserted successfully",
-        });
-      }
-    });
-  } catch (err) {
-    console.log("Their were a mongoose error");
-  }
-});
 //---------------------------------------------------------------------PUT Product
 router.put("/:id", async (req, res) => {
   try {
-    const rrr = await Product.findByIdAndUpdate(
+    await Product.findByIdAndUpdate(
       { _id: req.params.id },
       {
         $set: {

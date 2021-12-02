@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const products = require("./routes/products");
 const users = require("./routes/users");
+const images = require("./routes/images");
 const port = 3000;
 
 const app = express();
@@ -21,6 +22,9 @@ mongoose
 //application routes----------------------------------------------------get start
 app.use("/products", products);
 app.use("/users", users);
+app.use("/images", images);
+
+app.use("/image", express.static(__dirname + "/uploads"));
 
 //default errorhandler---------------------------------------------------------delet end
 const errorHandler = (err, req, res, next) => {
@@ -31,6 +35,6 @@ const errorHandler = (err, req, res, next) => {
 };
 app.use(errorHandler);
 
-app.listen(port, () => {
+app.listen(port, (req, res) => {
   console.log(`Example app listening at http://localhost:${port}`);
 });

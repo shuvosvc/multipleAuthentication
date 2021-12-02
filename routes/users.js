@@ -44,8 +44,8 @@ router.post("/login", async (req, res) => {
             userId: tem_user[0]._id,
             userRoll: tem_user[0].roll,
           },
-          process.env.JWT_SECRET,
-          { expiresIn: "24h" }
+          process.env.JWT_SECRET
+          // { expiresIn: "24h" }
         );
         res.status(200).json({
           access_token: token,
